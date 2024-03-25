@@ -1,24 +1,53 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
+
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Route, Link, BrowserRouter, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import {socket} from './components/socket';
+const uri = process.env.REACT_APP_BACKEND_URL;
+
 
 function App() {
+  console.log("url", uri);
+
+  useEffect(() => {
+    console.log(uri);
+    socket.on('connect', () => {
+      console.log("connected");
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.off('connect');
+      socket.disconnect();
+  };
+}, []);
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on('connect', () => {
+        console.log("connected");
+    });
+
+    // Cleanup on unmount
+    return () => {
+        socket.off('connect');
+        socket.disconnect();
+    };
+}, []);
+
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <Router>
+      <Routes>
+     <Route path="/" element={<Login/>} />
+     </Routes>
+     </Router>
     </div>
   );
 }
