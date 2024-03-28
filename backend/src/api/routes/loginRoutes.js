@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const io = require('../../config/socket');
+const Group = require('../../models/group');
+
 
 router.post('/login', async (req, res) => {
     try{
@@ -32,6 +35,7 @@ router.post('/login', async (req, res) => {
         console.log(err);
         return res.status(500).json({message:"error in generating token"});
     }
+    
     return res.json({token});
 })
 

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { socket } from "./socket";
 const url = process.env.REACT_APP_BACKEND_URL;
+
 
 interface userParams {
     email: string;
@@ -28,6 +30,10 @@ function LoginForm() {
         }
         const userData: userParams = {email, password};
         const response = await axios.post(`${url}/login`, userData);
+        const token = response.data.token;
+        socket.auth  = {token};
+        socket.connect();
+        console.log("check check", socket.auth);
         }
         catch(error){
             console.log("an error occured ", error);

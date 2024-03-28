@@ -35,7 +35,7 @@ router.post('/createGroup', validate, async (req, res) => {
 
 
 
-router.get('/getGroup', validate, (req,res)=>{
+router.get('/getGroup', validate, async (req,res)=>{
     console.log(req.body);
     const {long, lat} = req.body
     Group.find({
@@ -53,4 +53,20 @@ router.get('/getGroup', validate, (req,res)=>{
     
 })
 
+router.put('/joinGroup', validate, async (req,res) =>{
+    const userId = req.userId;
+    const {groupId} = req.body;
+    
+    try{
+    await Group.findByIdAndUpdate(groupId, {$addToSet: {members: userId}});
+    await User.findByIdAndUpdate(userId, {$addToSet: {groups: groupId}});
+    return res.status(200).json({message:"user successfully joined the group"});
+    }
+    catch(e){
+        return res.status(500).json({ message: `Internal server error: ${e.message}` });
+    }
+})
+
+
 module.exports = router;
+
