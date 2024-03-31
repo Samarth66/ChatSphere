@@ -1,6 +1,9 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { socket } from "./socket";
+import { useNavigate } from 'react-router-dom';
+import home from '../pages/Home';
+
 const url = process.env.REACT_APP_BACKEND_URL;
 
 
@@ -9,9 +12,15 @@ interface userParams {
     password: string;
 }
 
+
+
 function LoginForm() {
     const [email, setEmail]= useState<string>('')
     const [password, setPassword] = useState<string>('') 
+    
+    const navigate = useNavigate();
+
+
     function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>){ 
         setEmail(e.target.value);
     }
@@ -31,9 +40,11 @@ function LoginForm() {
         const userData: userParams = {email, password};
         const response = await axios.post(`${url}/login`, userData);
         const token = response.data.token;
+        localStorage.setItem('token', token);
         socket.auth  = {token};
         socket.connect();
         console.log("check check", socket.auth);
+        navigate('/home');
         }
         catch(error){
             console.log("an error occured ", error);

@@ -4,10 +4,24 @@ const validate = require('../middleware/authorization');
 const Group = require('../../models/group');
 const User = require('../../models/users');
 
+
+
 router.post('/createGroup', validate, async (req, res) => {
     console.log(req.body); 
-    const newGroup = req.body;
-    const groupDocument = new Group(newGroup);
+    const {groupName, location} = req.body;
+    console.log(req.body);
+    const userId = req.userId;
+    const locationData = {
+        type: 'Point',
+        coordinates: [location.longitude, location.latitude] // Ensure correct order: [longitude, latitude]
+    };
+    const data = {
+        name:groupName, location: locationData, owner: userId, members: [userId]
+    };
+
+    console.log("Data for group is", data);
+
+    const groupDocument = new Group(data);
 
     groupDocument.save()
         .then(group => {
@@ -54,8 +68,10 @@ router.get('/getGroup', validate, async (req,res)=>{
 })
 
 router.put('/joinGroup', validate, async (req,res) =>{
+    console.log("data from join group",req.body);
     const userId = req.userId;
     const {groupId} = req.body;
+    
     
     try{
     await Group.findByIdAndUpdate(groupId, {$addToSet: {members: userId}});

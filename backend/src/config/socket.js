@@ -1,14 +1,19 @@
-// socket.js
 const socketIo = require('socket.io');
-let io = null;
+let io;
 
 exports.initialize = (server) => {
     io = socketIo(server, {
         cors: {
-            origin: "http://localhost:3000", // Client URL
+            origin: "http://localhost:3000",
             methods: ["GET", "POST"]
         }
     });
-    // Additional setup...
+    return io;
+};
+
+exports.getIO = () => {
+    if (!io) {
+        throw new Error("Socket.io not initialized!");
+    }
     return io;
 };

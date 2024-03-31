@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Link, BrowserRouter, Routes } from 'rea
 import Home from './pages/Home';
 import Login from './pages/Login';
 import {socket} from './components/socket';
+
 const uri = process.env.REACT_APP_BACKEND_URL;
 
 
@@ -17,6 +18,7 @@ function App() {
      <Router>
       <Routes>
      <Route path="/" element={<Login/>} />
+     <Route path="/home" element={<Home />} />
      </Routes>
      </Router>
     </div>
